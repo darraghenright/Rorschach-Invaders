@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Matrix Test</title>
+        
+        <style>
+        
+        body
+        {
+            background: #333;
+        }
+        
+        #left,
+        #right
+        {
+            background: #fff;
+            float: left;
+            width: 120px;
+        }
+        
+        .cell
+        {
+            -webkit-transition: background-color 1s linear;
+            background-color: #666; 
+            float: right;
+            height: 20px;
+            width: 20px;
+        }
+        
+        .cell:hover,
+        .cell.over
+        {
+            -webkit-transition: background-color 0.1s linear;
+            background-color: #999;
+        }
+        
+        .on
+        {
+            background-color: #fff;
+        }
+        
+        .on:hover
+        {
+            background-color: #f90;
+        }
+        
+        </style>
+        <script>
+        
+        window.onload = function() {
+            
+            // better name than toggle
+            // clean it up and make it nice
+            // we could probably make the click use this function too...
+            // just feed the class name you want. no :hover state required
+            // issues with binding/event... just wrap in an anon func?
+            // eg: document.addEventListener('mouseover', toggle); or document.addEventListener('mouseover', function(e) { toggle(e); });
+            
+            var getMirror = function(e) {
+                
+                var parent = e.target.parentElement.id;                
+                var mirror = 'left' === parent ? 'right' : 'left';
+                
+                return document.getElementById(mirror);
+            }; 
+            
+            //
+            //
+            //
+            
+            document.addEventListener('mouseover', function(e) {
+            
+                if (!e.target.classList.contains('cell')) return;
+                
+                var mirror = getMirror(e);
+                var target = mirror.getElementsByClassName(e.target.classList[1]);
+            
+                target[0].classList.add('over');
+            });
+                
+            //
+            //
+            //
+            
+            document.addEventListener('mouseout', function(e) {
+            
+                if (!e.target.classList.contains('cell')) return;
+                
+                var mirror = getMirror(e);
+                var target = mirror.getElementsByClassName(e.target.classList[1]);
+            
+                target[0].classList.remove('over');            
+            });
+
+            //      
+            document.addEventListener('click', function(e) { 
+                
+                if (!e.target.classList.contains('cell')) return;
+                
+                var el = e.target;
+                
+
+                            
+                // toggle class
+                el.classList.contains('on') ? el.classList.remove('on') 
+                                            : el.classList.add('on');
+                
+                // cell.. parse instead
+                var c = el.classList[1];
+                var flip = 'left' === e.target.parentElement.id ? 'right' : 'left';
+                var x = flip + '_' + c;
+            
+                
+                var m = document.getElementById(x);
+                
+                m.classList.contains('on') ? m.classList.remove('on') 
+                                           : m.classList.add('on');
+                
+                
+
+            });
+        
+        };
+    
+
+        </script>
+    </head>
+    <body>
+        <div id="left">
+            <!-- row 0 -->
+            <div id="left_0" class="cell 0"></div>
+            <div id="left_1" class="cell 1"></div>
+            <div id="left_2" class="cell 2"></div>
+            <div id="left_3" class="cell 3"></div> 
+            <div id="left_4" class="cell 4"></div> 
+            <div id="left_5" class="cell 5"></div>
+            <!-- row 1 -->
+            <div id="left_6" class="cell 6"></div> 
+            <div id="left_7" class="cell 7"></div> 
+            <div id="left_8" class="cell 8"></div>
+            <div id="left_9" class="cell 9"></div>
+            <div id="left_10" class="cell 10"></div>
+            <div id="left_11" class="cell 11"></div>
+            <!-- row 3 --> 
+            <div id="left_12" class="cell 12"></div> 
+            <div id="left_13" class="cell 13"></div> 
+            <div id="left_14" class="cell 14"></div> 
+            <div id="left_15" class="cell 15"></div> 
+            <div id="left_16" class="cell 16"></div> 
+            <div id="left_17" class="cell 17"></div> 
+        </div>
+        
+        <div id="right">
+            <!-- row 0 -->
+            <div id="right_5" class="cell 5"></div> 
+            <div id="right_4" class="cell 4"></div> 
+            <div id="right_3" class="cell 3"></div> 
+            <div id="right_2" class="cell 2"></div>
+            <div id="right_1" class="cell 1"></div>
+            <div id="right_0" class="cell 0"></div>
+            <!-- row 1 -->
+            <div id="right_11" class="cell 11"></div>
+            <div id="right_10" class="cell 10"></div>
+            <div id="right_9" class="cell 9"></div>
+            <div id="right_8" class="cell 8"></div>
+            <div id="right_7" class="cell 7"></div> 
+            <div id="right_6" class="cell 6"></div> 
+            <!-- row 2 --> 
+            <div id="right_17" class="cell 17"></div> 
+            <div id="right_16" class="cell 16"></div> 
+            <div id="right_15" class="cell 15"></div> 
+            <div id="right_14" class="cell 14"></div> 
+            <div id="right_13" class="cell 13"></div> 
+            <div id="right_12" class="cell 12"></div> 
+        </div>        
+    </body>
+</html>
