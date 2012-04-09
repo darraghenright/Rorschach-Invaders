@@ -11,20 +11,27 @@
             background: #333;
         }
         
+        #matrix
+        {
+            margin: 0 auto;
+            overflow: none;
+            width: 240px;
+        }
+        
         #left,
         #right
         {
             background: #fff;
             float: left;
-            width: 120px;
+            width: 50%;
         }
         
         .cell
         {
-            -webkit-transition: background-color 1s linear;
+            -webkit-transition: background-color 0.5s linear;
             background-color: #666;
             cursor: pointer;
-            float: right;
+            float: left;
             height: 20px;
             width: 20px;
         }
@@ -32,7 +39,7 @@
         .cell.over
         {
             -webkit-transition: background-color 0.1s linear;
-            background-color: #999;
+            background-color: #cc0;
         }
         
         .on
@@ -42,129 +49,172 @@
         
         .on.over
         {
-            background-color: #f90;
+            background-color: #ff0;
         }
         
         </style>
         <script>
                 
         window.onload = function() {
-                        
-            //
-            // Init
-            //
-            
-            var cols = 6,
-                rows = 8,
-                matrix = [];
-            
-            //
-            // General
+              
+            //          
+            // generate a random boolean value            
             //
             
             var randBool = function() {
                 return !!Math.round(Math.random());
             };
             
-            var randomMatrix = function(array) {
-                for (var i = (cols * rows); i--;) {
-                    array.push(randBool());
-                }
-            }
-            
-            randomMatrix(matrix);
-            
-            
             //
-            // Event-related functions
+            // fill an array with values from a provided function
+            //
+            
+            var arrayFill = function(array, decr, fn) {
+                while (decr--) array.push(fn());
+            }
+                        
+            //
+            // toggle class name on a provided element
             //
                 
             var toggle = function(el, css) {
                 el.classList.contains(css) ? el.classList.remove(css) : el.classList.add(css);
             }
             
+            //
+            // grab the 'mirror' of a selected element; i.e: an element 
+            // with a matching class in another parent container
+            // 
+            
             var mirror = function(el) {
-                var mirrorId = ('left' === el.parentElement.id) ? 'right' : 'left'
+                var mirrorId = 'left' == el.parentElement.parentElement.id ? 'right' : 'left'
                 var parent = document.getElementById(mirrorId);
                 return parent.getElementsByClassName(el.classList[1])[0];
             }
             
-            var mouseEvent = function(e, css) {               
+            //
+            // toggle passed css class to an element under 
+            // cursor and its 'mirrored' element
+            //
+            
+            var handleMouseEventOnCell = function(e, css) {
                 if (e.target.classList.contains('cell')) {
                     toggle(e.target, css);
                     toggle(mirror(e.target), css);
                 }
             }; 
-
-            //
-            // Events
-            //
             
-            document.addEventListener('click', function(e) {
-                mouseEvent(e, 'on'); 
-            });
+            var handleClearButtonEvent = function() {  
+                var cells = document.getElementById('matrix')
+                    .getElementsByClassName('on');
+                
+                for (var i = cells.length; i--;) {
+                    cells[i].classList.remove('on');
+                }        
+            };
+                              
+            // some initial declarations/definitions
+            
+            var init = function() {
+            
+                var cell, 
+                    rowLeft, 
+                    rowRight,
+                    cols = 6,
+                    rows = 8,
+                    matrix = [],
+                    divLeft  = document.getElementById('left'),
+                    divRight = document.getElementById('right');
+                
+                //
+                // blank
+                //
+                divLeft.innerHTML  = null;
+                divRight.innerHTML = null;
+                
+                //
+                // fill matrix with random values
+                //
+                
+                arrayFill(matrix, (cols * rows), randBool);
+                
+                //
+                // iterate!        
+                //
+                
+                matrix.forEach(function(isTrue, index) {
+                                
+                    // init each new row
+                    if (index % cols == 0) {
                     
-            document.addEventListener('mouseover', function(e) { 
-                mouseEvent(e, 'over'); 
+                        // create new rows
+                        rowLeft  = document.createElement('div');
+                        rowRight = document.createElement('div');
+                        
+                        // attach new rows
+                        divLeft.appendChild(rowLeft);
+                        divRight.appendChild(rowRight);
+                    }
+                
+                    // create a new cell
+                    cell = document.createElement('div');
+                    
+                    // numeric class names: legal in HTML5. yay!
+                    cell.classList.add('cell');
+                    cell.classList.add(index);
+     
+                    // add class if current array element is true
+                    isTrue && cell.classList.add('on');
+                    
+                    // append, clone, prepend
+                    rowLeft.appendChild(cell);
+                    rowRight.insertBefore(cell.cloneNode(), rowRight.firstElementChild);
+                });
+            };
+            
+            //
+            // register various listeners
+            //
+            
+            var divMatrix = document.getElementById('matrix');
+            var btnClear  = document.getElementById('clear');
+            var btnRandom = document.getElementById('randomise');
+            
+            btnClear.addEventListener('click', handleClearButtonEvent);
+            btnRandom.addEventListener('click', init);
+            
+            matrix.addEventListener('click', function(e) {
+                handleMouseEventOnCell(e, 'on'); 
+            });
+                                
+            matrix.addEventListener('mouseover', function(e) { 
+                handleMouseEventOnCell(e, 'over'); 
             });
             
-            document.addEventListener('mouseout', function(e) { 
-                mouseEvent(e, 'over'); 
+            matrix.addEventListener('mouseout', function(e) { 
+                handleMouseEventOnCell(e, 'over'); 
             });
+
+            // TODO
+            // cleanup wherever
+            // handle button events could be neater
+            // add initial 'init' to onload event
+            // fix randomise = clear before append
             
-        
+            init();
         };
     
 
         </script>
     </head>
     <body>
-        <div id="left">
-            <!-- row 0 -->
-            <div id="left_0" class="cell 0"></div>
-            <div id="left_1" class="cell 1"></div>
-            <div id="left_2" class="cell 2"></div>
-            <div id="left_3" class="cell 3"></div> 
-            <div id="left_4" class="cell 4"></div> 
-            <div id="left_5" class="cell 5"></div>
-            <!-- row 1 -->
-            <div id="left_6" class="cell 6"></div> 
-            <div id="left_7" class="cell 7"></div> 
-            <div id="left_8" class="cell 8"></div>
-            <div id="left_9" class="cell 9"></div>
-            <div id="left_10" class="cell 10"></div>
-            <div id="left_11" class="cell 11"></div>
-            <!-- row 3 --> 
-            <div id="left_12" class="cell 12"></div> 
-            <div id="left_13" class="cell 13"></div> 
-            <div id="left_14" class="cell 14"></div> 
-            <div id="left_15" class="cell 15"></div> 
-            <div id="left_16" class="cell 16"></div> 
-            <div id="left_17" class="cell 17"></div> 
+        
+        <div id="matrix">
+            <div id="left"></div>
+            <div id="right"></div>
         </div>
         
-        <div id="right">
-            <!-- row 0 -->
-            <div id="right_5" class="cell 5"></div> 
-            <div id="right_4" class="cell 4"></div> 
-            <div id="right_3" class="cell 3"></div> 
-            <div id="right_2" class="cell 2"></div>
-            <div id="right_1" class="cell 1"></div>
-            <div id="right_0" class="cell 0"></div>
-            <!-- row 1 -->
-            <div id="right_11" class="cell 11"></div>
-            <div id="right_10" class="cell 10"></div>
-            <div id="right_9" class="cell 9"></div>
-            <div id="right_8" class="cell 8"></div>
-            <div id="right_7" class="cell 7"></div> 
-            <div id="right_6" class="cell 6"></div> 
-            <!-- row 2 --> 
-            <div id="right_17" class="cell 17"></div> 
-            <div id="right_16" class="cell 16"></div> 
-            <div id="right_15" class="cell 15"></div> 
-            <div id="right_14" class="cell 14"></div> 
-            <div id="right_13" class="cell 13"></div> 
-            <div id="right_12" class="cell 12"></div> 
-        </div>        
+        <button id="randomise">Randomise!</button>
+        <button id="clear">Clear!</button>        
     </body>
 </html>
