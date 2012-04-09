@@ -28,7 +28,7 @@
             width: 20px;
         }
         
-        .cell:hover,
+        /*.cell:hover,*/
         .cell.over
         {
             -webkit-transition: background-color 0.1s linear;
@@ -57,68 +57,41 @@
             // issues with binding/event... just wrap in an anon func?
             // eg: document.addEventListener('mouseover', toggle); or document.addEventListener('mouseover', function(e) { toggle(e); });
             
-            var getMirror = function(e) {
+            var toggle = function(e, css) {
+            
+                console.log(arguments);
+            
                 
-                var parent = e.target.parentElement.id;                
-                var mirror = 'left' === parent ? 'right' : 'left';
+                e.stopPropagation();
                 
-                return document.getElementById(mirror);
+                if (!e.target.classList.contains('cell')) return;
+                
+                // get parent
+                var a = e.target.parentElement.id;                
+                
+                // rollover element
+                e.target.classList.contains(css) ? e.target.classList.remove(css) : e.target.classList.add(css);
+                
+                // opposite
+                var b = 'left' === a ? 'right' : 'left';
+                
+                var c = document.getElementById(b);
+                var d = c.getElementsByClassName(e.target.classList[1])[0];
+                
+                d.classList.contains(css) ? d.classList.remove(css) : d.classList.add(css);
+
             }; 
-            
-            //
-            //
-            //
-            
+                    
             document.addEventListener('mouseover', function(e) {
-            
-                if (!e.target.classList.contains('cell')) return;
-                
-                var mirror = getMirror(e);
-                var target = mirror.getElementsByClassName(e.target.classList[1]);
-            
-                target[0].classList.add('over');
+                toggle(e, 'over');
             });
                 
-            //
-            //
-            //
-            
             document.addEventListener('mouseout', function(e) {
-            
-                if (!e.target.classList.contains('cell')) return;
-                
-                var mirror = getMirror(e);
-                var target = mirror.getElementsByClassName(e.target.classList[1]);
-            
-                target[0].classList.remove('over');            
+                toggle(e, 'over');
             });
-
-            //      
-            document.addEventListener('click', function(e) { 
-                
-                if (!e.target.classList.contains('cell')) return;
-                
-                var el = e.target;
-                
-
-                            
-                // toggle class
-                el.classList.contains('on') ? el.classList.remove('on') 
-                                            : el.classList.add('on');
-                
-                // cell.. parse instead
-                var c = el.classList[1];
-                var flip = 'left' === e.target.parentElement.id ? 'right' : 'left';
-                var x = flip + '_' + c;
-            
-                
-                var m = document.getElementById(x);
-                
-                m.classList.contains('on') ? m.classList.remove('on') 
-                                           : m.classList.add('on');
-                
-                
-
+     
+            document.addEventListener('click', function(e) {            
+                toggle(e, 'on');
             });
         
         };
