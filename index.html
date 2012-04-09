@@ -22,13 +22,13 @@
         .cell
         {
             -webkit-transition: background-color 1s linear;
-            background-color: #666; 
+            background-color: #666;
+            cursor: pointer;
             float: right;
             height: 20px;
             width: 20px;
         }
         
-        /*.cell:hover,*/
         .cell.over
         {
             -webkit-transition: background-color 0.1s linear;
@@ -40,59 +40,78 @@
             background-color: #fff;
         }
         
-        .on:hover
+        .on.over
         {
             background-color: #f90;
         }
         
         </style>
         <script>
-        
+                
         window.onload = function() {
+                        
+            //
+            // Init
+            //
             
-            // better name than toggle
-            // clean it up and make it nice
-            // we could probably make the click use this function too...
-            // just feed the class name you want. no :hover state required
-            // issues with binding/event... just wrap in an anon func?
-            // eg: document.addEventListener('mouseover', toggle); or document.addEventListener('mouseover', function(e) { toggle(e); });
+            var cols = 6,
+                rows = 8,
+                matrix = [];
             
-            var toggle = function(e, css) {
+            //
+            // General
+            //
             
-                console.log(arguments);
+            var randBool = function() {
+                return !!Math.round(Math.random());
+            };
             
+            var randomMatrix = function(array) {
+                for (var i = (cols * rows); i--;) {
+                    array.push(randBool());
+                }
+            }
+            
+            randomMatrix(matrix);
+            
+            
+            //
+            // Event-related functions
+            //
                 
-                e.stopPropagation();
-                
-                if (!e.target.classList.contains('cell')) return;
-                
-                // get parent
-                var a = e.target.parentElement.id;                
-                
-                // rollover element
-                e.target.classList.contains(css) ? e.target.classList.remove(css) : e.target.classList.add(css);
-                
-                // opposite
-                var b = 'left' === a ? 'right' : 'left';
-                
-                var c = document.getElementById(b);
-                var d = c.getElementsByClassName(e.target.classList[1])[0];
-                
-                d.classList.contains(css) ? d.classList.remove(css) : d.classList.add(css);
-
+            var toggle = function(el, css) {
+                el.classList.contains(css) ? el.classList.remove(css) : el.classList.add(css);
+            }
+            
+            var mirror = function(el) {
+                var mirrorId = ('left' === el.parentElement.id) ? 'right' : 'left'
+                var parent = document.getElementById(mirrorId);
+                return parent.getElementsByClassName(el.classList[1])[0];
+            }
+            
+            var mouseEvent = function(e, css) {               
+                if (e.target.classList.contains('cell')) {
+                    toggle(e.target, css);
+                    toggle(mirror(e.target), css);
+                }
             }; 
+
+            //
+            // Events
+            //
+            
+            document.addEventListener('click', function(e) {
+                mouseEvent(e, 'on'); 
+            });
                     
-            document.addEventListener('mouseover', function(e) {
-                toggle(e, 'over');
+            document.addEventListener('mouseover', function(e) { 
+                mouseEvent(e, 'over'); 
             });
-                
-            document.addEventListener('mouseout', function(e) {
-                toggle(e, 'over');
+            
+            document.addEventListener('mouseout', function(e) { 
+                mouseEvent(e, 'over'); 
             });
-     
-            document.addEventListener('click', function(e) {            
-                toggle(e, 'on');
-            });
+            
         
         };
     
