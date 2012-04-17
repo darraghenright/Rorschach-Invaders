@@ -1,0 +1,68 @@
+body
+{
+    background: #fff;
+    color: #fff;
+    margin: 48px;
+}
+
+h1,
+button
+{
+    color: #903;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 48px;
+    margin: 48px 0;
+    text-align: center;
+}
+
+button
+{
+    padding: 8px;
+    border: none;
+    display: block;
+    margin: 8px auto;
+
+}
+        
+#matrix
+{
+    box-shadow: 0 10px 40px rgba(0,0,0,.3);
+    background-color: #fff;
+    border: 30px solid #fff;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 360px;
+}
+
+#left,
+#right
+{
+    float: left;
+    width: 50%;
+}
+
+.cell
+{
+    -webkit-transition: background-color 0.5s linear;
+    xbox-shadow: inset 0 0px 1px rgba(0,0,0,.2);
+    cursor: pointer;
+    float: left;
+    height: 30px;
+    width: 30px;
+}
+
+.cell.over
+{
+    -webkit-transition: background-color 0.1s linear;
+    background-color: #ddd;
+}
+
+.on
+{
+    background-color: #903;
+}
+
+.on.over
+{
+    background-color: #c06;
+}
