@@ -1,4 +1,3 @@
-
        ##
       ####
      ######
@@ -10,10 +9,16 @@
 
 #RORSCHACH INVADERS
 
-What the hell is this? Good question. It is:
+What is it? Good question. It is:
 
-* A Space Invader randomiser/drawing 'palette'
+* A Space Invader randomiser/palette for drawing your own space invaders
 * Mostly an excuse to play with GitHub project pages
 * Also an excuse to play with some HTML5/JS
 
-It's pretty lame at the moment.
+It's pretty lame at the moment. Working on that. 
+
+TODO:
+
+* add features
+* ???
+* profit
